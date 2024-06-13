@@ -1,0 +1,29 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="PipeHandler2.MainWindow"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
+        Title="PipeHandler2" Height="980" Width="900"
+        Background="LightBlue">
+    <Grid RowDefinitions="30,900,50">
+        <Grid ColumnDefinitions="100,100,100,200,200,100,100" Grid.Row="0" Height="30" Width="900">
+            <Button Click="Fing0Accessible" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="12" Background="Purple" Foreground="White">Finger 0</Button>
+            <Button Click="Fing1Accessible" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="12" Background="Purple" Foreground="White">Finger 1</Button>
+            <Button Click="Fing2Accessible" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="12" Background="Purple" Foreground="White">Finger 2</Button>
+            <TextBlock Name="PipeDeskName" Grid.Column="3" Height="25" FontSize="14"/>      
+            <TextBox Name="InputPathToJson" Grid.Column="4" Height="25" FontSize="14" Watermark="путь к файлу:"/>
+            <Button Click="EnterPathToFile" Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="12" Background="DarkRed" Foreground="White">enter</Button>
+            <CheckBox Name="CheckForAuto" Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="12">auto regime</CheckBox>
+        </Grid>
+        <ScottPlot:AvaPlot Name="GridPlot" Grid.Row="1" Grid.Column="0"/>
+        <Grid Height="50" Width="900" RowDefinitions="25,25" Grid.Row="2">
+            <Grid Height="25" Width="900" ColumnDefinitions="450,450" Grid.Row="0">
+                <Button Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Blue" Foreground="White" FontSize="12">NEXT</Button>
+                <Button Click="ShowFinalState" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="DarkRed" Foreground="White" FontSize="12">SHOW HOSED PIPES</Button>
+            </Grid>
+            <TextBlock Name="StateInfo" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Height="25"/>
+        </Grid>
+    </Grid>
+</Window>
