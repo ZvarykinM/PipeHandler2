@@ -20,7 +20,7 @@
         <ScottPlot:AvaPlot Name="GridPlot" Grid.Row="1" Grid.Column="0"/>
         <Grid Height="50" Width="900" RowDefinitions="25,25" Grid.Row="2">
             <Grid Height="25" Width="900" ColumnDefinitions="450,450" Grid.Row="0">
-                <Button Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Blue" Foreground="White" FontSize="12">NEXT</Button>
+                <Button Click="ClickRenew" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Blue" Foreground="White" FontSize="12">NEXT</Button>
                 <Button Click="ShowFinalState" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="DarkRed" Foreground="White" FontSize="12">SHOW HOSED PIPES</Button>
             </Grid>
             <TextBlock Name="StateInfo" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Height="25"/>
