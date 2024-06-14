@@ -340,4 +340,55 @@ class Robot
         var NewPos = NewPosForState(f0_aff, f1_aff, f2_aff);
         Inversion(NewPos.Item3, NewPos.Item1, NewPos.Item2);
     }
+
+    private List<double[]> MakeNewAccessibleCoords(string FingerIndex)
+    {
+        var Res = new List<double[]>();
+        Coordinate FingCoord;
+        switch(FingerIndex)
+        {
+            case "F0":
+                FingCoord = SetOfRobotStates[2].MoveableFingers[0].HandPos;
+                break;
+            case "F1":
+                FingCoord = SetOfRobotStates[2].MoveableFingers[1].HandPos;
+                break;
+            case "F2":
+                FingCoord = SetOfRobotStates[2].F2;
+                break;
+            default: throw new Exception("НЕИЗВЕСТНЫЙ ИДЕНТИФИКАТОР ПАЛЬЦА");
+        }
+        return FindAllPlanning(FingCoord.X, FingCoord.Y);
+    }
+
+    private List<double[]> FindAllPlanning(double x, double y)
+    {
+        // var x = SetOfRobotStates[2].MoveableFingers[1].HandPos.X;
+        // var y = SetOfRobotStates[2].MoveableFingers[1].HandPos.Y;
+        var PossibleIndexCoordArray = new List<double[]>
+        {
+            ([x, y]), //ПОДУМАТЬ!!!
+            ([x - StepX, y - 3 * StepY]),
+            ([x + StepX, y - 3 * StepY]),
+            ([x - StepX, y + 3 * StepY]),
+            ([x + StepX, y + 3 * StepY]),
+            ([x, y + 2 * StepY]),
+            ([x, y - 2 * StepY]),
+            ([x - StepX, y - StepY]),
+            ([x - StepX, y + StepY]),
+            ([x + StepX, y - StepY]),
+            ([x + StepX, y + StepY])
+        };
+        return PossibleIndexCoordArray;
+    }
+
+    private List<double[]> FindAllPlanningForHose() => MakeNewAccessibleCoords("F1");
+
+    private List<double[]> FindAllAccessibleForHose()
+    {
+        var PlanForHose = FindAllPlanningForHose();
+        var Res = new List<double[]>();
+        PlanForHose.ForEach(coord => {if(InversionH(SetOfRobotStates[2], coord) is not null) Res.Add(coord);});
+        return Res;
+    }
 }

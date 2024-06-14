@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using KVP = System.Collections.Generic.KeyValuePair<string, ScottPlot.Color>;
 using ScottPlot;
 using Avalonia;
+using System;
 namespace PipeHandler2;
 
 public partial class MainWindow : Window
@@ -64,7 +65,7 @@ public partial class MainWindow : Window
     private List<ScottPlot.Plottables.Ellipse[]> StateFingersSchemas;
 
     private List<ScottPlot.Plottables.LinePlot[]> StateHandsSchemas;
-    
+
     private void DrawFingers(Robot.RobotState SomeRobotState)
     {
         var FingerCircleSchemas = new ScottPlot.Plottables.Ellipse[3];
@@ -122,6 +123,41 @@ public partial class MainWindow : Window
         }
     }
 
+    private void RemoveSomeState(string State)
+    {
+        ScottPlot.Plottables.Ellipse[] FingMarkers;
+        ScottPlot.Plottables.LinePlot[] HandMarkers;
+        switch(State)
+        {
+            case "Prev":
+                FingMarkers = StateFingersSchemas[0];
+                HandMarkers = StateHandsSchemas[0];
+                break;
+            case "Curr":
+                FingMarkers = StateFingersSchemas[1];
+                HandMarkers = StateHandsSchemas[1];
+                break;
+            case "Future":
+                FingMarkers = StateFingersSchemas[2];
+                HandMarkers = StateHandsSchemas[2];
+                break;
+            default: throw new Exception("НЕИЗВЕСТНОЕ НАИМЕНОВАНИЕ СОСТОЯНИЯ");
+        }
+        if(FingMarkers is not null)
+        {
+            for(var i = 0; i < 3; i++)
+            if(FingMarkers[i] is not null)
+                gridPlot.Plot.Remove(FingMarkers[i]);
+        }
+        if(HandMarkers is not null)
+        {
+            if(HandMarkers[0] is not null)
+                gridPlot.Plot.Remove(HandMarkers[0]);
+            if(HandMarkers[1] is not null)
+                gridPlot.Plot.Remove(HandMarkers[1]);
+        }
+    }
+
     public MainWindow()
     {
         InitializeComponent();
@@ -142,7 +178,9 @@ public partial class MainWindow : Window
 
     public void ClickRenew(object sender, RoutedEventArgs args)
     {
-        PipeRobot.NewState([2, 0], [2, 0], [2, 0]);
+        foreach(var state in States)
+            RemoveSomeState(state);
+        PipeRobot.NewState([2, 2], [2, 2], [2, 2]);
         foreach(var state in States)
             DrawState(state);
         gridPlot.Refresh();
