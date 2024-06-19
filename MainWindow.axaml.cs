@@ -198,8 +198,8 @@ public partial class MainWindow : Window
 
     public void ShowFinalState(object sender, RoutedEventArgs args)
     {
-        var HosedPipesCoords = PipeRobot.FindAllAccessibleForHose();
-        HosedPipesCoords.ForEach(Coord => {gridPlot.Plot.Add.Circle(xCenter: Coord[0], yCenter: Coord[1], radius: PipeRobot.Radius).FillColor = Colors.Navy;});
+        PipeRobot.FindAllAccessibleForHose();
+        DrawHoles();
     }
 
     public void Fing0Accessible(object sender, RoutedEventArgs args)

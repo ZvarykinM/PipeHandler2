@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Avalonia.Interactivity;
 namespace PipeHandler2;
 
 class Robot
@@ -368,6 +370,7 @@ class Robot
         // var y = SetOfRobotStates[2].MoveableFingers[1].HandPos.Y;
         var PossibleIndexCoordArray = new List<double[]>
         {
+            ([x, y]),
             ([x - StepX, y - 3 * StepY]),
             ([x + StepX, y - 3 * StepY]),
             ([x - StepX, y + 3 * StepY]),
@@ -384,11 +387,9 @@ class Robot
 
     private List<double[]> FindAllPlanningForHose() => MakeNewAccessibleCoords("F1");
 
-    public List<double[]> FindAllAccessibleForHose()
+    public void FindAllAccessibleForHose()
     {
-        var PlanForHose = FindAllPlanningForHose();
-        var Res = new List<double[]>();
-        PlanForHose.ForEach(coord => {if(InversionH(SetOfRobotStates[2], coord) is not null) Res.Add(coord);});
-        return Res;
+        var PlanForHose = FindAllPlanningForHose().FindAll(GridContext.CheckAccessity);
+        PlanForHose.ForEach(coord => {if(InversionH(SetOfRobotStates[2], coord) is not null) GridContext.CoordsInfo[coord] = "Done";});
     }
 }
