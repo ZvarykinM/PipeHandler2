@@ -102,7 +102,7 @@ public partial class MainWindow : Window
                 break;
             case "Future":
                 RS = PipeRobot.GetRobotStates[2];
-                Hands = StateHandsSchemas[1];
+                Hands = StateHandsSchemas[2];
                 HandsCol = Colors.DeepPink;
                 HandsPattern = LinePattern.Solid;
                 LineWidth = 2;
@@ -146,7 +146,7 @@ public partial class MainWindow : Window
         if(FingMarkers is not null)
         {
             for(var i = 0; i < 3; i++)
-            if(FingMarkers[i] is not null)
+            // if(FingMarkers[i] is not null)
                 gridPlot.Plot.Remove(FingMarkers[i]);
         }
         if(HandMarkers is not null)
@@ -155,7 +155,10 @@ public partial class MainWindow : Window
                 gridPlot.Plot.Remove(HandMarkers[0]);
             if(HandMarkers[1] is not null)
                 gridPlot.Plot.Remove(HandMarkers[1]);
+            // if(HandMarkers[2] is not null)
+            //     gridPlot.Plot.Remove(HandMarkers[1]);
         }
+        gridPlot.Refresh();
     }
 
     public MainWindow()
@@ -189,12 +192,14 @@ public partial class MainWindow : Window
     public void EnterPathToFile(object sender, RoutedEventArgs args)
     {
         gridPlot.Plot.Clear();
-        Initialization(F0, F1, F2, InputJsonPath.Text);
+        var Path = InputJsonPath.Text is not null ? InputJsonPath.Text : ConstPathToFile;
+        Initialization(F0, F1, F2, Path);
     }
 
     public void ShowFinalState(object sender, RoutedEventArgs args)
     {
-        
+        var HosedPipesCoords = PipeRobot.FindAllAccessibleForHose();
+        HosedPipesCoords.ForEach(Coord => {gridPlot.Plot.Add.Circle(xCenter: Coord[0], yCenter: Coord[1], radius: PipeRobot.Radius).FillColor = Colors.Navy;});
     }
 
     public void Fing0Accessible(object sender, RoutedEventArgs args)

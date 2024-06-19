@@ -55,7 +55,7 @@ class Robot
     public class RobotState: ICloneable
     {
         public Coordinate F2{get; set;}
-        private Hand[] SetMoveableFingers = new Hand[2];
+        private Hand[] SetMoveableFingers = new Hand[3];
         public Hand[] MoveableFingers{get => SetMoveableFingers; set => SetMoveableFingers = value;} //0 - Fing0, 1 - Fing1, 2 - FingH
         public Coordinate Center;
         public object Clone() => new RobotState(){F2 = F2, MoveableFingers = MoveableFingers, Center = Center};
@@ -238,7 +238,7 @@ class Robot
                 var q1 = Aff(e1, robF1x, Aff(e0, l1 - robHy, q0));
                 var h1 = new Hand(){handLine = [e0, q0], HandPos = q1, handLen = l1 - robHy};
                 var NewRobotState = SomeRobotState.Copy;
-                NewRobotState.MoveableFingers[3] = hh;
+                NewRobotState.MoveableFingers[2] = hh;
                 NewRobotState.MoveableFingers[1] = h1;
                 return NewRobotState;
             }
@@ -338,7 +338,8 @@ class Robot
     public void NewState(int[] f0_aff, int[] f1_aff, int[] f2_aff)
     {
         var NewPos = NewPosForState(f0_aff, f1_aff, f2_aff);
-        Inversion(NewPos.Item3, NewPos.Item1, NewPos.Item2);
+        if(GridContext.CheckAccessity(NewPos.Item3, NewPos.Item1, NewPos.Item2))
+            Inversion(NewPos.Item3, NewPos.Item1, NewPos.Item2);
     }
 
     private List<double[]> MakeNewAccessibleCoords(string FingerIndex)
@@ -367,7 +368,6 @@ class Robot
         // var y = SetOfRobotStates[2].MoveableFingers[1].HandPos.Y;
         var PossibleIndexCoordArray = new List<double[]>
         {
-            ([x, y]), //ПОДУМАТЬ!!!
             ([x - StepX, y - 3 * StepY]),
             ([x + StepX, y - 3 * StepY]),
             ([x - StepX, y + 3 * StepY]),
@@ -384,7 +384,7 @@ class Robot
 
     private List<double[]> FindAllPlanningForHose() => MakeNewAccessibleCoords("F1");
 
-    private List<double[]> FindAllAccessibleForHose()
+    public List<double[]> FindAllAccessibleForHose()
     {
         var PlanForHose = FindAllPlanningForHose();
         var Res = new List<double[]>();
