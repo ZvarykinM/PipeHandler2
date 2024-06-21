@@ -198,7 +198,7 @@ public partial class MainWindow : Window
 
     public void ShowFinalState(object sender, RoutedEventArgs args)
     {
-        PipeRobot.FindAllAccessibleForHose();
+        //PipeRobot.FindAllAccessibleForHose();
         DrawHoles();
     }
 

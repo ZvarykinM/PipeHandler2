@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.Linq;
 using Avalonia.Interactivity;
 namespace PipeHandler2;
@@ -250,8 +251,12 @@ class Robot
 
     public bool CheckHand(Hand H, double lmin, double lmax)
     {
-        var l = Math.Abs(H.handLen) / 1900; //(hand_flag == false ? 1000 : 1); //??? ОТКУДА ПАРАМЕТРЫ НА L_MIN, L_MAX ???
-        return l > lmin && l < lmax;
+        if(H is not null)
+        {
+            var l = Math.Abs(H.handLen) / 1900; //(hand_flag == false ? 1000 : 1); //??? ОТКУДА ПАРАМЕТРЫ НА L_MIN, L_MAX ???
+            return l > lmin && l < lmax;
+        }
+        return false;
     }
 
     public bool CheckF0(RobotState SomeRobotState) => CheckHand(SomeRobotState.MoveableFingers[0], robL0Min, robL0Max);
@@ -342,6 +347,7 @@ class Robot
         var NewPos = NewPosForState(f0_aff, f1_aff, f2_aff);
         if(GridContext.CheckAccessity(NewPos.Item3, NewPos.Item1, NewPos.Item2))
             Inversion(NewPos.Item3, NewPos.Item1, NewPos.Item2);
+        FindAllAccessibleForHose();
     }
 
     private List<double[]> MakeNewAccessibleCoords(string FingerIndex)
@@ -366,8 +372,6 @@ class Robot
 
     private List<double[]> FindAllPlanning(double x, double y)
     {
-        // var x = SetOfRobotStates[2].MoveableFingers[1].HandPos.X;
-        // var y = SetOfRobotStates[2].MoveableFingers[1].HandPos.Y;
         var PossibleIndexCoordArray = new List<double[]>
         {
             ([x, y]),
@@ -385,11 +389,14 @@ class Robot
         return PossibleIndexCoordArray;
     }
 
-    private List<double[]> FindAllPlanningForHose() => MakeNewAccessibleCoords("F1");
+    private List<double[]> FindAllPlanningForHose() => MakeNewAccessibleCoords("F1").FindAll(F1_Pose => 
+                                                                                                CheckF1(Inversion1(SetOfRobotStates[1], F1_Pose)));
 
     public void FindAllAccessibleForHose()
     {
-        var PlanForHose = FindAllPlanningForHose().FindAll(GridContext.CheckAccessity);
-        PlanForHose.ForEach(coord => {if(InversionH(SetOfRobotStates[2], coord) is not null) GridContext.CoordsInfo[coord] = "Done";});
+        //var PlanForHose = FindAllPlanningForHose().FindAll(GridContext.CheckAccessity);
+        //PlanForHose.ForEach(coord => {if(InversionH(SetOfRobotStates[2], coord) is not null) GridContext.CoordsInfo[coord] = "Done";});
+        var PlanForHose = FindAllPlanningForHose();
+        PlanForHose.ForEach(Pipe_XY => GridContext.CoordsInfo[Pipe_XY] = "Done");
     }
 }
